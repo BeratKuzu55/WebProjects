@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Berat Kuzu Game Project</title>
+        <link rel="icon" href="favicon.ico">
+        <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+
+
+
+        <style>
+
+            .main{
+                background-image: url(https://cdn.pixabay.com/photo/2020/03/30/14/34/mountains-4984418_960_720.png);
+                
+                min-height: 760px;
+                position: relative;
+                background-position-x: center;
+                background-position: "center";
+                background-repeat: no-repeat;
+                background-size: cover;
+                position: relative;
+            }
+
+            html{
+                margin-top: 0px;
+                margin-left: 0px;
+            }
+
+            body{
+                margin-top: 0px;
+                margin-left: 0px;
+                margin-bottom: 0px;
+                margin-right: 0px;
+            }
+
+            .alan1{
+                position: relative;
+               min-width: 300px;
+               min-height: 200px;
+               margin-left: 15px;
+            }
+
+            h1{
+                            
+                font-family: 'MonteCarlo', cursive;
+                font-family: 'Montez', cursive;
+                font-family: 'Montserrat', sans-serif;
+                font-family: 'Moo Lah Lah', cursive;
+                font-size: 75px;
+                padding-top: 40px;
+                
+            }
+
+            .resim_alani{
+                position: relative;
+                margin-left: 250px;
+            }
+
+
+
+            #level-title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 3rem;
+            margin:  5%;
+            color: #FEF2BF;
+            }
+
+            .container {
+            display: block;
+            width: 50%;
+            margin: auto;
+
+            }
+
+            .btn {
+            margin: 25px;
+            display: inline-block;
+            height: 200px;
+            width: 200px;
+            border: 10px solid black;
+            border-radius: 20%;
+            }
+
+            .game-over {
+            background-color: red;
+            opacity: 0.8;
+            }
+
+            .red {
+            background-color: red;
+            }
+
+            .green {
+            background-color: green;
+            }
+
+            .blue {
+            background-color: blue;
+            }
+
+            .yellow {
+            background-color: yellow;
+            }
+
+            .pressed {
+            box-shadow: 0 0 20px white;
+            background-color: grey;
+            }
+        </style>
+
+
+
+
+    </head>
+
+
+
+
+
+    <body>
+
+       
+        <div class="main">
+
+            
+
+            <div class="alan1">
+                
+                <img src="foto1.JPG" alt="" style="width: 200px; border-radius: 50%; float: left;">
+                <h1 style="margin-top:0px; margin-bottom: 5px;">Berat Kuzu Game Project</h1>
+                    <h2> size gösterilen sırada renkli butonlara basmanız gerekmektedir <br> başlamak için bir tuşa basınız
+                    (örneğin ilk mavi gösterildi ve bastınız sonrasında sarı gösterildi bu aşamada önce maviye sonra sarıya basmalısınız)</h2>
+        
+            </div>
+            <img src="TRLOGO(1).jpg" alt="" style="width: 200px; border-radius: 50%;  margin-left: 20px; float: left;">
+            
+           
+
+            <div class="container">
+                <div lass="row">
+            
+                  <div type="button" id="green" class="btn green">
+            
+                  </div>
+            
+                  <div type="button" id="red" class="btn red">
+            
+                  </div>
+                </div>
+            
+                <div class="row">
+            
+                  <div type="button" id="yellow" class="btn yellow">
+            
+                  </div>
+                  <div type="button" id="blue" class="btn blue">
+            
+                  </div>
+            
+                </div>
+            
+              </div>
+            
+
+        </div>
+
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script>
+                
+                var buttonColours = ["red", "blue", "green", "yellow"];
+
+                var gamePattern = [];
+                var userClickedPattern = [];
+
+                var started = false;
+                var level = 0;
+
+                $(document).keypress(function() {
+                if (!started) {
+                    $("#level-title").text("Level " + level);
+                    nextSequence();
+                    started = true;
+                }
+                });
+
+                $(".btn").click(function() {
+
+                var userChosenColour = $(this).attr("id");
+                userClickedPattern.push(userChosenColour);
+
+                playSound(userChosenColour);
+                animatePress(userChosenColour);
+
+                checkAnswer(userClickedPattern.length-1);
+                });
+
+                function checkAnswer(currentLevel) {
+
+                    if (gamePattern[currentLevel] === userClickedPattern[currentLevel]) {
+                    if (userClickedPattern.length === gamePattern.length){
+                        setTimeout(function () {
+                        nextSequence();
+                        }, 1000);
+                    }
+                    } else {
+                    playSound("wrong");
+                    $("body").addClass("game-over");
+                    $("#level-title").text("Game Over, Press Any Key to Restart");
+
+                    setTimeout(function () {
+                        $("body").removeClass("game-over");
+                    }, 200);
+
+                    startOver();
+                    }
+                }
+
+
+                function nextSequence() {
+                userClickedPattern = [];
+                level++;
+                $("#level-title").text("Level " + level);
+                var randomNumber = Math.floor(Math.random() * 4);
+                var randomChosenColour = buttonColours[randomNumber];
+                gamePattern.push(randomChosenColour);
+
+                $("#" + randomChosenColour).fadeIn(100).fadeOut(100).fadeIn(100);
+                playSound(randomChosenColour);
+                }
+
+                function animatePress(currentColor) {
+                $("#" + currentColor).addClass("pressed");
+                setTimeout(function () {
+                    $("#" + currentColor).removeClass("pressed");
+                }, 100);
+                }
+
+                function playSound(name) {
+                var audio = new Audio("sounds/" + name + ".mp3");
+                audio.play();
+                }
+
+                function startOver() {
+                level = 0;
+                gamePattern = [];
+                started = false;
+                }
+        </script>
+
+    </body>
+
+
+
+
+
+</html>
